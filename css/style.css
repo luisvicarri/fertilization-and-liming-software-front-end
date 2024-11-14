@@ -3,71 +3,78 @@
 body {
     display: flex;
     flex-direction: column;
-    /* Organiza os elementos em coluna */
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: auto;
     margin: 0;
     background: linear-gradient(to bottom, #d4c2a1, #ffffff, #e6f7e6);
     font-family: 'Poppins', Arial, sans-serif;
 }
 
-/* Estilo do título */
 h1 {
     color: #5a5a5a;
     font-size: 2.5rem;
     text-align: center;
     margin: 0;
-    /* Remove margens extras ao redor do título */
 }
 
-/* Estilo do texto secundário */
 p {
     color: #7a7a7a;
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: center;
     margin: 15px 0;
-    /* Espaçamento entre o título e o parágrafo */
 }
 
 label {
     font-size: 1rem;
     color: #555;
-    /* margin-bottom: 2px; Espaço entre o título e o campo */
+    margin-top: 10px;
     text-align: left;
-    width: 250px;
-    display: inline-block; /* Para que o label ocupe a largura do campo */
+    width: auto;
+    display: inline-block;
 }
 
-input[type="text"] {
+input[type="text"], input[type="number"] {
     padding: 10px;
     font-size: 1rem;
     border: 2px solid #ccc;
     border-radius: 5px;
-    text-align: left; /* Centraliza o texto dentro do campo */
-    margin-top: 20px; /* Adiciona um espaço entre os campos */
-    width: 250px; /* Define a largura dos campos */
+    text-align: left;
+    width: 500px;
+    font-family: 'Poppins';
 }
 
-/* Adiciona um pouco mais de espaço entre os campos de entrada */
-input[type="text"]:not(:first-child) {
-    margin-top: 10px; /* Maior espaçamento entre os campos */
+form p {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-/* Estilo para o container dos radio buttons */
-.radio-container {
-    display: flex; /* Alinha os itens em linha (horizontalmente) */
-    justify-content: center; /* Centraliza os radio buttons */
-    align-items: center; /* Alinha verticalmente os radio buttons */
-    margin-top: 10px; /* Espaçamento entre os campos de entrada e as opções */
+.buttons-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-/* Estilo para cada label e radio button */
-.radio-container label {
-    margin-right: 25px; /* Aumenta o espaço entre o rótulo e o próximo radio button */
-    font-size: 1.2rem; /* Ajusta o tamanho da fonte */
+input[type="button"], input[type="reset"] {
+    background-color: #97af6a;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-family: 'Poppins';
+    margin-right: 10px;
 }
 
-.radio-container input[type="radio"] {
-    margin-right: 15px; /* Adiciona mais espaço entre o radio button e o rótulo */
+input[type="button"]:hover, input[type="reset"]:hover {
+    background-color: #7f9458;
+}
+
+input[type="button"]:active, input[type="reset"]:active {
+    background-color: #0b0f03;
+    transform: scale(0.98);
 }

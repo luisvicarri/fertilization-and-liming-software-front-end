@@ -11,48 +11,58 @@
     <h1>Recomendação de Adubação e Calagem</h1>
     <p>Seja bem-vindo ao sistema de análise do solo, para começar, forneça os dados solicitados abaixo:</p>
 
-    <!-- Opções de seleção -->
-    <div>
-        <label for="opcao1">Macieira</label>
-        <input type="radio" id="option0" name="option" value="0">
+    <form>
+        <fieldset>
+            <legend>Escolha o Tipo de Plantação</legend>
 
-        <label for="opcao2">Consorciação de Gramíneas e Leguminosas</label>
-        <input type="radio" id="option1" name="option" value="1">
-    </div>
+            <input type="radio" name="option" id="macieira" value="0" checked>
+            <label for="macieira">Macieira</label><br>
 
-    <!-- Campos de entrada -->
-        <!-- Campo de entrada 1 -->
-        <label for="campo1">Largura da Faixa:</label>
-        <input type="text" id="campo1" placeholder="Insira seu dado 1" />
+            <input type="radio" name="option" id="consorciacao" value="1">
+            <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
 
-        <!-- Campo de entrada 2 -->
-        <label for="campo2">Distância entre as Linhas:</label>
-        <input type="text" id="campo2" placeholder="Insira seu dado 2" />
+        </fieldset>
 
-        <!-- Campo de entrada 3 -->
-        <label for="campo3">Bases (V%):</label>
-        <input type="text" id="campo3" placeholder="Insira seu dado 3" />
+        <fieldset>
+            <legend>Insira os Dados Solicitados</legend>
 
-        <!-- Campo de entrada 4 -->
-        <label for="campo4">Índice SMP:</label>
-        <input type="text" id="campo4" placeholder="Insira seu dado 4" />
+            <p>
+                <label for="larguraFaixa">Largura da Faixa</label>
+                <input type="number" step="0.01" id="larguraFaixa" />
+                
+                <label for="distanciaLinhas">Distância entre as Linhas</label>
+                <input type="number" step="0.01" id="distanciaLinhas" />
+                
+                <label for="bases">Bases (V%)</label>
+                <input type="number" step="0.01" id="bases" />
+                
+                <label for="smp">Índice SMP</label>
+                <input type="number" step="0.01" id="smp" />
+                
+                <label for="ctcPH7">CTC pH 7.0</label>
+                <input type="number" step="0.01" id="ctcPH7" />
+                
+                <label for="argila">Argila</label>
+                <input type="number" step="0.01" id="argila" />
+                
+                <label for="potassio">Potássio (K)</label>
+                <input type="number" step="0.01" id="potassio" />
+                
+                <label for="fosforo">Fósforo (P)</label>
+                <input type="number" id="fosforo" />
+            </p>
 
-        <!-- Campo de entrada 5 -->
-        <label for="campo5">CTC pH 7.0:</label>
-        <input type="text" id="campo5" placeholder="Insira seu dado 5" />
+        </fieldset>
 
-        <!-- Campo de entrada 6 -->
-        <label for="campo6">Argila:</label>
-        <input type="text" id="campo6" placeholder="Insira seu dado 6" />
+        <div class="buttons-container">
+            <input type="button" id="button" value="Enviar">
+            <input type="reset" id="reset" value="Resetar">
+        </div>
 
-        <!-- Campo de entrada 7 -->
-        <label for="campo7">Potássio (K):</label>
-        <input type="text" id="campo7" placeholder="Insira seu dado 7" />
+    </form>
 
-        <!-- Campo de entrada 8 -->
-        <label for="campo8">Fósforo (P):</label>
-        <input type="text" id="campo8" placeholder="Insira seu dado 8" />
-    
+    <script src="js/script.js"></script>
+
 </body>
 
 </html>
