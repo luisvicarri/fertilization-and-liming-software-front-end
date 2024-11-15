@@ -29,25 +29,25 @@
             <p>
                 <label for="larguraFaixa">Largura da Faixa</label>
                 <input type="number" step="0.01" id="larguraFaixa" />
-                
+
                 <label for="distanciaLinhas">Distância entre as Linhas</label>
                 <input type="number" step="0.01" id="distanciaLinhas" />
-                
+
                 <label for="bases">Bases (V%)</label>
                 <input type="number" step="0.01" id="bases" />
-                
+
                 <label for="smp">Índice SMP</label>
                 <input type="number" step="0.01" id="smp" />
-                
+
                 <label for="ctcPH7">CTC pH 7.0</label>
                 <input type="number" step="0.01" id="ctcPH7" />
-                
+
                 <label for="argila">Argila</label>
                 <input type="number" step="0.01" id="argila" />
-                
+
                 <label for="potassio">Potássio (K)</label>
                 <input type="number" step="0.01" id="potassio" />
-                
+
                 <label for="fosforo">Fósforo (P)</label>
                 <input type="number" id="fosforo" />
             </p>
@@ -60,6 +60,37 @@
         </div>
 
     </form>
+
+    <!-- Janela Modal -->
+    <div id="modal" class="modal oculto">
+        <div class="modal-conteudo">
+            <!-- Modal genérico para erros -->
+            <h2 id="modal-titulo"></h2>
+            <p id="modal-mensagem" class="oculto"></p>
+
+            <!-- Modal específico para resultados -->
+            <div id="modal-resultado" class="oculto">
+                <fieldset>
+                    <legend>Cálcário</legend>
+                    <p id="tipoCalcario"></p>
+                    <p id="calcarioHec"></p>
+                    <p id="calcarioTotal"></p>
+                </fieldset>
+                <fieldset>
+                    <legend>Potássio (K)</legend>
+                    <p id="potassioHec"></p>
+                    <p id="potassioTotal"></p>
+                </fieldset>
+                <fieldset>
+                    <legend>Fósforo (P)</legend>
+                    <p id="fosforoHec"></p>
+                    <p id="fosforoTotal"></p>
+                </fieldset>
+            </div>
+
+            <button id="fecharModal">Fechar</button>
+        </div>
+    </div>
 
     <script src="js/script.js"></script>
 
