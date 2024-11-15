@@ -142,3 +142,16 @@ function exibirModalResultado(dados) {
 
     modal.style.display = "flex";
 }
+
+function showScreen() {
+
+    const contents = document.querySelectorAll('.content');
+    contents.forEach(content => content.style.display = 'none');
+
+    const selectedValue = document.getElementById('tipoEntrada').value;
+    
+    const selectedScreen = document.getElementById(selectedValue);
+    if (selectedScreen) {
+        selectedScreen.style.display = 'block';
+    }
+}
