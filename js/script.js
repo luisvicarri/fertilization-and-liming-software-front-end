@@ -13,19 +13,17 @@ document.getElementById('button').addEventListener('click', function (event) {
     event.preventDefault();
 
     let tipoEspecie = document.querySelector('input[name="option"]:checked')?.value;
-    let larguraFaixa = parseFloat(document.getElementById('larguraFaixa').value);
-    let distanciaLinhas = parseFloat(document.getElementById('distanciaLinhas').value);
-    let bases = parseFloat(document.getElementById('bases').value);
+    let area = parseFloat(document.getElementById('area').value);
     let smp = parseFloat(document.getElementById('smp').value);
     let ctcPH7 = parseFloat(document.getElementById('ctcPH7').value);
     let argila = parseFloat(document.getElementById('argila').value);
     let k = parseFloat(document.getElementById('potassio').value);
     let p = parseFloat(document.getElementById('fosforo').value);
 
-    if (!isNaN(larguraFaixa) && !isNaN(distanciaLinhas) && !isNaN(bases) && !isNaN(smp)
-        && !isNaN(ctcPH7) && !isNaN(argila) && !isNaN(p) && !isNaN(k) && tipoEspecie) {
+    if (!isNaN(area) && !isNaN(smp) && !isNaN(ctcPH7) && 
+        !isNaN(argila) && !isNaN(p) && !isNaN(k)) {
 
-        sendJSON(tipoEspecie, larguraFaixa, distanciaLinhas, bases, smp, ctcPH7, argila, k, p);
+        sendJSON(tipoEspecie, area, smp, ctcPH7, argila, k, p);
 
         dados = receiveJSON();
 
@@ -45,13 +43,11 @@ document.getElementById("fecharModal").addEventListener("click", function () {
     document.getElementById("modal").style.display = "none";
 });
 
-function sendJSON(tipoEspecie, larguraFaixa, distanciaLinhas, bases, smp, ctcPH7, argila, k, p) {
+function sendJSON(tipoEspecie, area, smp, ctcPH7, argila, k, p) {
 
     let json = {
         "tipoEspecie": tipoEspecie,
-        "larguraFaixa": larguraFaixa,
-        "distanciaLinhas": distanciaLinhas,
-        "bases": bases,
+        "area": area,
         "smp": smp,
         "ctcPH7": ctcPH7,
         "argila": argila,

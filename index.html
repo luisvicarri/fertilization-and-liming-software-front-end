@@ -15,10 +15,10 @@
         <fieldset>
             <legend>Escolha o Tipo de Plantação</legend>
 
-            <input type="radio" name="option" id="macieira" value="0" checked>
+            <input type="radio" name="option" id="macieira" value="1" checked>
             <label for="macieira">Macieira</label><br>
 
-            <input type="radio" name="option" id="consorciacao" value="1">
+            <input type="radio" name="option" id="consorciacao" value="0">
             <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
 
         </fieldset>
@@ -27,28 +27,22 @@
             <legend>Insira os Dados Solicitados</legend>
 
             <p>
-                <label for="larguraFaixa">Largura da Faixa</label>
-                <input type="number" step="0.01" id="larguraFaixa" />
-
-                <label for="distanciaLinhas">Distância entre as Linhas</label>
-                <input type="number" step="0.01" id="distanciaLinhas" />
-
-                <label for="bases">Bases (V%)</label>
-                <input type="number" step="0.01" id="bases" />
+                <label for="area">Área do Solo (ha)</label>
+                <input type="number" step="0.01" id="area" />
 
                 <label for="smp">Índice SMP</label>
                 <input type="number" step="0.01" id="smp" />
 
-                <label for="ctcPH7">CTC pH 7.0</label>
+                <label for="ctcPH7">CTC (pH 7,0)</label>
                 <input type="number" step="0.01" id="ctcPH7" />
 
-                <label for="argila">Argila</label>
+                <label for="argila">Argila (%)</label>
                 <input type="number" step="0.01" id="argila" />
 
-                <label for="potassio">Potássio (K)</label>
+                <label for="potassio">Potássio (K) (mg/dm^3)</label>
                 <input type="number" step="0.01" id="potassio" />
 
-                <label for="fosforo">Fósforo (P)</label>
+                <label for="fosforo">Fósforo (P) (mg/dm^3)</label>
                 <input type="number" id="fosforo" />
             </p>
 

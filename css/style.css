@@ -5,7 +5,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: auto;
+    height: 100vh;
     margin: 0;
     background: linear-gradient(to bottom, #d4c2a1, #ffffff, #e6f7e6);
     font-family: 'Poppins', Arial, sans-serif;
