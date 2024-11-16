@@ -20,7 +20,7 @@ document.getElementById('button').addEventListener('click', function (event) {
     let k = parseFloat(document.getElementById('potassio').value);
     let p = parseFloat(document.getElementById('fosforo').value);
 
-    if (!isNaN(area) && !isNaN(smp) && !isNaN(ctcPH7) && 
+    if (!isNaN(area) && !isNaN(smp) && !isNaN(ctcPH7) &&
         !isNaN(argila) && !isNaN(p) && !isNaN(k)) {
 
         sendJSON(tipoEspecie, area, smp, ctcPH7, argila, k, p);
@@ -149,9 +149,81 @@ function showScreen() {
     contents.forEach(content => content.style.display = 'none');
 
     const selectedValue = document.getElementById('tipoEntrada').value;
-    
+
     const selectedScreen = document.getElementById(selectedValue);
     if (selectedScreen) {
         selectedScreen.style.display = 'block';
     }
 }
+
+// script.js
+document.addEventListener("DOMContentLoaded", () => {
+    const fileField = document.getElementById("file-field");
+    const fileInput = document.getElementById("file-input");
+    const filePathInput = document.getElementById("file-path");
+    const browseButton = document.getElementById("browse-btn");
+
+    fileField.style.display = "flex";
+
+    // Abrir o seletor de arquivo ao clicar no botão "Escolher arquivo"
+    browseButton.addEventListener("click", () => {
+        fileInput.click();
+    });
+
+    // Atualizar o caminho do arquivo no campo de texto
+    fileInput.addEventListener("change", () => {
+        if (fileInput.files[0]) {
+            filePathInput.value = fileInput.files[0].name;
+            console.log('Caminho do arquivo PDF selecionado: ', filePathInput.value);
+        }
+    });
+
+    const processButton = document.getElementById("process-btn");
+    const responseMessage = document.getElementById("responseMessage");
+
+    processButton.addEventListener("click", async () => {
+        const file = fileInput.files[0]; // Obtém o arquivo selecionado
+
+        if (!file) {
+            alert("Selecione um arquivo antes de processar!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file); // Adiciona o arquivo ao formData
+
+        try {
+            // Envia o arquivo ao backend
+            const response = await fetch("http://127.0.0.1:5000/upload_pdf", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (response.ok) {
+
+                let result = await response.json();
+                result = JSON.parse(result);
+
+                console.log("Resultado:", result);
+
+                responseMessage.innerText = `Sucesso: ${result.status}`;
+
+                // Agora, acesse o campo 'status'
+                if (result.status) {
+                    responseMessage.innerText = `Sucesso: ${result.status}`;
+                } else {
+                    responseMessage.innerText = "Falha: status não encontrado na resposta.";
+                }
+
+            } else {
+                responseMessage.innerText = "Erro ao processar o arquivo.";
+            }
+
+        } catch (error) {
+            console.error(error);
+            responseMessage.innerText = "Erro de conexão com o servidor.";
+        }
+
+    });
+
+});

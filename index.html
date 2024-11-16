@@ -29,15 +29,15 @@
             <fieldset>
 
                 <legend>Escolha o Tipo de Plantação</legend>
-    
+
                 <input type="radio" name="option" id="macieira" value="1" checked>
                 <label for="macieira">Macieira</label><br>
-    
+
                 <input type="radio" name="option" id="consorciacao" value="0">
                 <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
 
             </fieldset>
-    
+
             <fieldset>
 
                 <legend>Insira os Dados Solicitados</legend>
@@ -45,25 +45,25 @@
                 <p>
                     <label for="area">Área do Solo (ha)</label>
                     <input type="number" step="0.01" id="area" />
-    
+
                     <label for="smp">Índice SMP</label>
                     <input type="number" step="0.01" id="smp" />
-    
+
                     <label for="ctcPH7">CTC (pH 7,0)</label>
                     <input type="number" step="0.01" id="ctcPH7" />
-    
+
                     <label for="argila">Argila (%)</label>
                     <input type="number" step="0.01" id="argila" />
-    
+
                     <label for="potassio">Potássio (K) (mg/dm^3)</label>
                     <input type="number" step="0.01" id="potassio" />
-    
+
                     <label for="fosforo">Fósforo (P) (mg/dm^3)</label>
                     <input type="number" id="fosforo" />
                 </p>
 
             </fieldset>
-    
+
             <div class="buttons-container">
                 <input type="button" id="button" value="Enviar">
                 <input type="reset" id="reset" value="Resetar">
@@ -72,9 +72,29 @@
         </form>
 
     </div>
-    
+
     <div id="pdf" class="content">
-        
+
+        <form>
+
+            <label for="file-path">Importe o PDF que deseja analisar</label>
+
+            <div id="file-field" style="display: none;" class="input-container">
+
+                <button type="button" id="browse-btn">Importar arquivo</button>
+
+                <input type="text" id="file-path" placeholder="Nenhum arquivo escolhido" readonly>
+                <input type="file" id="file-input" accept=".pdf" hidden>
+
+                <button type="button" id="process-btn">Processar</button>
+
+            </div>
+
+            <div id="responseMessage"></div>
+
+
+        </form>
+
     </div>
 
     <!-- Janela Modal -->
@@ -111,7 +131,7 @@
                     <legend>Fósforo (P)</legend>
                     <p id="fosforoHec"></p>
                     <p id="fosforoTotal"></p>
-                    
+
                 </fieldset>
 
             </div>
