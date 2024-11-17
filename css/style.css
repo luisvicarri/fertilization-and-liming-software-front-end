@@ -160,13 +160,18 @@ input[type="reset"]:hover {
 .modal-conteudo button {
     margin-top: 15px;
     padding: 10px 20px;
-    border: none;
-    background-color: #28a745;
-    color: #fff;
+    background-color: transparent;
+    color: #dc3545;
+    border: 1px solid #dc3545;
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;
     font-family: 'Poppins', Arial, sans-serif;
+}
+
+.modal-conteudo button:hover {
+    background-color: #dc3545;
+    color: white;
 }
 
 .oculto {

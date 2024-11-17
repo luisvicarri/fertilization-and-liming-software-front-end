@@ -8,40 +8,9 @@ const jsonTeste = {
     valor_fosforo_total: 500
 };
 
-document.getElementById('button').addEventListener('click', function (event) {
-
-    event.preventDefault();
-
-    let tipoEspecie = document.querySelector('input[name="option"]:checked')?.value;
-    let area = parseFloat(document.getElementById('area').value);
-    let smp = parseFloat(document.getElementById('smp').value);
-    let ctcPH7 = parseFloat(document.getElementById('ctcPH7').value);
-    let argila = parseFloat(document.getElementById('argila').value);
-    let k = parseFloat(document.getElementById('potassio').value);
-    let p = parseFloat(document.getElementById('fosforo').value);
-
-    if (!isNaN(area) && !isNaN(smp) && !isNaN(ctcPH7) &&
-        !isNaN(argila) && !isNaN(p) && !isNaN(k)) {
-
-        sendJSON(tipoEspecie, area, smp, ctcPH7, argila, k, p);
-
-        dados = receiveJSON();
-
-        if (dados.status === "failed") {
-            exibirModalErro("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
-        } else {
-            exibirModalResultado(dados);
-        }
-
-    } else {
-        alert("Por favor, insira todos os valores corretamente.");
-    }
-
-});
-
-document.getElementById("fecharModal").addEventListener("click", function () {
-    document.getElementById("modal").style.display = "none";
-});
+/*
+    FUNCTIONS
+*/
 
 function sendJSON(tipoEspecie, area, smp, ctcPH7, argila, k, p) {
 
@@ -156,7 +125,144 @@ function showScreen() {
     }
 }
 
-// script.js
+function showPDFResult(result) {
+
+    let dados = result.data;
+    console.log("Dados do JSON: ", dados);
+
+    const amostrasSection = document.getElementById("amostras-section");
+    const amostrasContainer = document.getElementById("amostras-container");
+    const amostrasCount = document.getElementById("amostras-count");
+
+    // Exibe a seção de amostras
+    amostrasSection.style.display = "block";
+
+    // Atualiza o contador de amostras
+    amostrasCount.textContent = dados.length;
+
+    // Limpa o contêiner
+    amostrasContainer.innerHTML = "";
+
+    // Renderiza as amostras
+    dados.forEach((amostra) => {
+        const amostraDiv = document.createElement("div");
+        amostraDiv.classList.add("amostra");
+
+        amostraDiv.innerHTML = `
+                <h3>Ref. ${dados[amostra.id - 1].ref}</h3>
+                
+                <input type="radio" name="tipo-${amostra.id}" id="consorciacao" value=0>
+                <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
+
+                <input type="radio" name="tipo-${amostra.id}" id="macieira" value=1>
+                <label for="macieira">Macieira</label><br>
+
+                <input type="number" placeholder="Área plantada em Hectares" data-id="${amostra.id}"/>
+                <button class="calcular calcular-btn" data-id="${amostra.id}">Calcular</button>
+                <button class="remover remover-btn">Excluir</button>  
+            `;
+
+        // Funções dos botões
+        const calcularButton = amostraDiv.querySelector(".calcular");
+        const removerButton = amostraDiv.querySelector(".remover");
+
+        calcularButton.addEventListener("click", function (event) {
+
+            event.preventDefault();
+
+            if (result.status === "success") {
+                const amostraId = this.getAttribute("data-id");
+                console.log("Amostra ativada: ", amostraId)
+
+                const areaInput = document.querySelector(`input[data-id="${amostraId}"]`);
+
+                const radios = document.querySelectorAll(`input[name="tipo-${amostra.id}"]`);
+                const isAnyRadioChecked = Array.from(radios).some(radio => radio.checked);
+                const selectedRadio = document.querySelector(`input[name="tipo-${amostraId}"]:checked`);
+
+                index = amostraId - 1
+                console.log("Dados da posição ", index, " : ", dados[index])
+
+                const isAreaValid = areaInput.value.trim() !== "";
+                const isSMPValid = !isNaN(dados[index].SMP);
+                const isCTCValid = !isNaN(dados[index].CTC_ph7);
+                const isArgilaValid = !isNaN(dados[index].argila);
+                const isFosforoValid = !isNaN(dados[index].P);
+                const isPotassioValid = !isNaN(dados[index].K);
+
+                if (isAreaValid && isAnyRadioChecked && isSMPValid && isCTCValid &&
+                    isArgilaValid && isFosforoValid && isPotassioValid) {
+
+                    sendJSON(selectedRadio.value, areaInput.value, dados[index].SMP,
+                        dados[index].CTC_ph7, dados[index].argila, dados[index].K, dados[index].P);
+
+                    calculation = receiveJSON();
+                    exibirModalResultado(calculation);
+
+                } else if (!isAnyRadioChecked) {
+                    alert("Por favor, selecione o tipo de espécie");
+
+                } else if (!isAreaValid) {
+                    alert("Por favor, preencha a área do solo");
+
+                } else {
+                    alert("Algum dado necessário está ausente ou inválido.");
+                }
+
+            } else {
+                exibirModalErro("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
+            }
+
+        });
+
+        removerButton.addEventListener("click", () => {
+            amostrasContainer.removeChild(amostraDiv);
+            amostrasCount.textContent = --amostrasCount.textContent;
+        });
+
+        amostrasContainer.appendChild(amostraDiv);
+    });
+}
+
+/*
+    EVENTS
+*/
+
+document.getElementById('button').addEventListener('click', function (event) {
+
+    event.preventDefault();
+
+    let tipoEspecie = document.querySelector('input[name="option"]:checked')?.value;
+    let area = parseFloat(document.getElementById('area').value);
+    let smp = parseFloat(document.getElementById('smp').value);
+    let ctcPH7 = parseFloat(document.getElementById('ctcPH7').value);
+    let argila = parseFloat(document.getElementById('argila').value);
+    let k = parseFloat(document.getElementById('potassio').value);
+    let p = parseFloat(document.getElementById('fosforo').value);
+
+    if (!isNaN(area) && !isNaN(smp) && !isNaN(ctcPH7) &&
+        !isNaN(argila) && !isNaN(p) && !isNaN(k)) {
+
+        sendJSON(tipoEspecie, area, smp, ctcPH7, argila, k, p);
+
+        dados = receiveJSON();
+
+        if (dados.status === "failed") {
+            exibirModalErro("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
+        } else {
+            exibirModalResultado(dados);
+        }
+
+    } else {
+        alert("Por favor, insira todos os valores corretamente.");
+    }
+
+});
+
+document.getElementById("fecharModal").addEventListener("click", function () {
+    document.getElementById("modal").style.display = "none";
+});
+
 document.addEventListener("DOMContentLoaded", () => {
     const fileField = document.getElementById("file-field");
     const fileInput = document.getElementById("file-input");
@@ -204,12 +310,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 let result = await response.json();
                 result = JSON.parse(result);
 
-                console.log("Resultado:", result);
+                console.log("Resultado recebido:", result);
 
-                let dados = result.data;
-                console.log(dados);
-
-                showPDFResult(dados);
+                showPDFResult(result);
 
             } else {
                 responseMessage.innerText = "Erro ao processar o arquivo.";
@@ -225,62 +328,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
-
-function showPDFResult(result) {
-    const amostrasSection = document.getElementById("amostras-section");
-    const amostrasContainer = document.getElementById("amostras-container");
-    const amostrasCount = document.getElementById("amostras-count");
-
-    // Exibe a seção de amostras
-    amostrasSection.style.display = "block";
-
-    // Atualiza o contador de amostras
-    amostrasCount.textContent = result.length;
-
-    // Limpa o contêiner
-    amostrasContainer.innerHTML = "";
-
-    // Renderiza as amostras
-    result.forEach((amostra) => {
-        const amostraDiv = document.createElement("div");
-        amostraDiv.classList.add("amostra");
-
-        amostraDiv.innerHTML = `
-                <h3>Amostra ${amostra.id}</h3>
-                
-                <input type="radio" name="tipo-${amostra.id}" id="consorciacao" value=0 checked>
-                <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
-
-                <input type="radio" name="tipo-${amostra.id}" id="macieira" value=1>
-                <label for="macieira">Macieira</label><br>
-
-                <input type="number" placeholder="Área plantada em Hectares" />
-                <button class="calcular calcular-btn">Calcular</button>
-                <button class="remover remover-btn">Excluir</button>  
-            `;
-
-        // Funções dos botões
-        const calcularButton = amostraDiv.querySelector(".calcular");
-        const removerButton = amostraDiv.querySelector(".remover");
-
-        calcularButton.addEventListener("click", function(event) {
-
-            event.preventDefault();
-
-            dados = receiveJSON();
-
-            if (dados.status === "failed") {
-                exibirModalErro("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
-            } else {
-                exibirModalResultado(dados);
-            }
-        });
-
-        removerButton.addEventListener("click", () => {
-            amostrasContainer.removeChild(amostraDiv);
-            amostrasCount.textContent = --amostrasCount.textContent;
-        });
-
-        amostrasContainer.appendChild(amostraDiv);
-    });
-}
