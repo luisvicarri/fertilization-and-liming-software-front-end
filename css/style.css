@@ -5,7 +5,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     background: linear-gradient(to bottom, #d4c2a1, #ffffff, #e6f7e6);
     font-family: 'Poppins', Arial, sans-serif;
@@ -30,11 +30,14 @@ label {
     color: #555;
     margin-top: 10px;
     text-align: left;
-    width: auto;
+    width: 500px;
     display: inline-block;
+    margin-bottom: 10px;
 }
 
-input[type="text"], input[type="number"] {
+input[type="text"],
+input[type="number"],
+select {
     padding: 10px;
     font-size: 1rem;
     border: 2px solid #ccc;
@@ -42,9 +45,16 @@ input[type="text"], input[type="number"] {
     text-align: left;
     width: 500px;
     font-family: 'Poppins';
+    margin-right: 10px;
 }
 
 form p {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.select-group {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -57,9 +67,9 @@ form p {
     margin-bottom: 20px;
 }
 
-input[type="button"], input[type="reset"] {
-    background-color: #97af6a;
-    color: white;
+input[type="button"],
+input[type="reset"],
+button {
     padding: 12px 30px;
     border: none;
     border-radius: 4px;
@@ -70,27 +80,56 @@ input[type="button"], input[type="reset"] {
     margin-right: 10px;
 }
 
-input[type="button"]:hover, input[type="reset"]:hover, .modal-conteudo button:hover {
-    background-color: #7f9458;
+input[type="button"] {
+    background-color: #28a745;
+    color: white;
 }
 
-input[type="button"]:active, input[type="reset"]:active {
+button {
+    background-color: #28a745;
+    color: white;
+}
+
+input[type="button"]:hover,
+input[type="reset"]:hover,
+.modal-conteudo button:hover,
+button:hover {
+    background-color: #218838;
+}
+
+/* input[type="button"]:active,
+input[type="reset"]:active 
+{
     background-color: #0b0f03;
     transform: scale(0.98);
+} */
+
+input[type="reset"] {
+    background-color: transparent;
+    color: #e08d1f;
+    border: 1px solid #e08d1f;
+}
+
+input[type="reset"]:hover {
+    background-color: #e08d1f;
+    color: white;
 }
 
 /* Fundo escuro para o modal */
 .modal {
-    display: none; /* Inicialmente escondido */
+    display: none;
+    /* Inicialmente escondido */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Fundo transparente */
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Fundo transparente */
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Sempre sobre o conteúdo */
+    z-index: 9999;
+    /* Sempre sobre o conteúdo */
 }
 
 /* Conteúdo centralizado da janela */
@@ -121,15 +160,87 @@ input[type="button"]:active, input[type="reset"]:active {
 .modal-conteudo button {
     margin-top: 15px;
     padding: 10px 20px;
-    border: none;
-    background-color: #97af6a;
-    color: #fff;
+    background-color: transparent;
+    color: #dc3545;
+    border: 1px solid #dc3545;
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;
     font-family: 'Poppins', Arial, sans-serif;
 }
 
+.modal-conteudo button:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
 .oculto {
     display: none;
+}
+
+.content {
+    display: none;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+#process-btn {
+    background-color: transparent;
+    color: #007BFF;
+    border: 1px solid #007BFF;
+}
+
+#process-btn:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.amostra {
+    margin: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.calcular-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.remover-btn {
+    background-color: transparent;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.calcular-btn:hover {
+    background-color: #218838;
+}
+
+.remover-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+h3 {
+    margin: 4px;
 }

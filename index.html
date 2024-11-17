@@ -11,79 +11,143 @@
     <h1>Recomendação de Adubação e Calagem</h1>
     <p>Seja bem-vindo ao sistema de análise do solo, para começar, forneça os dados solicitados abaixo:</p>
 
-    <form>
-        <fieldset>
-            <legend>Escolha o Tipo de Plantação</legend>
+    <div class="select-group">
 
-            <input type="radio" name="option" id="macieira" value="1" checked>
-            <label for="macieira">Macieira</label><br>
+        <!-- <label for="tipoEntrada">Escolha uma Forma de Inserção de Dados:</label> -->
 
-            <input type="radio" name="option" id="consorciacao" value="0">
-            <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
+        <select id="tipoEntrada" onchange="showScreen()">
+            <option>Escolha uma forma de inserção de dados</option>
+            <option value="manual">Inserir dados manualmente</option>
+            <option value="pdf">Importar dados</option>
+        </select>
 
-        </fieldset>
+    </div>
 
-        <fieldset>
-            <legend>Insira os Dados Solicitados</legend>
+    <div id="manual" class="content">
 
-            <p>
-                <label for="area">Área do Solo (ha)</label>
-                <input type="number" step="0.01" id="area" />
+        <form>
 
-                <label for="smp">Índice SMP</label>
-                <input type="number" step="0.01" id="smp" />
+            <fieldset>
 
-                <label for="ctcPH7">CTC (pH 7,0)</label>
-                <input type="number" step="0.01" id="ctcPH7" />
+                <legend>Escolha o Tipo de Plantação</legend>
 
-                <label for="argila">Argila (%)</label>
-                <input type="number" step="0.01" id="argila" />
+                <input type="radio" name="option" id="macieira" value="1" checked>
+                <label for="macieira">Macieira</label><br>
 
-                <label for="potassio">Potássio (K) (mg/dm^3)</label>
-                <input type="number" step="0.01" id="potassio" />
+                <input type="radio" name="option" id="consorciacao" value="0">
+                <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
 
-                <label for="fosforo">Fósforo (P) (mg/dm^3)</label>
-                <input type="number" id="fosforo" />
-            </p>
+            </fieldset>
 
-        </fieldset>
+            <fieldset>
 
-        <div class="buttons-container">
-            <input type="button" id="button" value="Enviar">
-            <input type="reset" id="reset" value="Resetar">
-        </div>
+                <legend>Insira os Dados Solicitados</legend>
 
-    </form>
+                <p>
+                    <label for="area">Área do Solo (ha)</label>
+                    <input type="number" step="0.01" id="area" />
+
+                    <label for="smp">Índice SMP</label>
+                    <input type="number" step="0.01" id="smp" />
+
+                    <label for="ctcPH7">CTC (pH 7,0)</label>
+                    <input type="number" step="0.01" id="ctcPH7" />
+
+                    <label for="argila">Argila (%)</label>
+                    <input type="number" step="0.01" id="argila" />
+
+                    <label for="potassio">Potássio (K)</label>
+                    <input type="number" step="0.01" id="potassio" />
+
+                    <label for="fosforo">Fósforo (P)</label>
+                    <input type="number" id="fosforo" />
+                </p>
+
+            </fieldset>
+
+            <div class="buttons-container">
+                <input type="button" id="button" value="Enviar">
+                <input type="reset" id="reset" value="Resetar">
+            </div>
+
+        </form>
+
+    </div>
+
+    <div id="pdf" class="content">
+
+        <form>
+
+            <label for="file-path">Importe o PDF que deseja analisar</label>
+
+            <div id="file-field" style="display: none;" class="input-container">
+
+                <button type="button" id="browse-btn">Importar arquivo</button>
+
+                <input type="text" id="file-path" placeholder="Nenhum arquivo escolhido" readonly>
+                <input type="file" id="file-input" accept=".pdf" hidden>
+
+                <button type="button" id="process-btn">Processar</button>
+
+            </div>
+
+            <div id="responseMessage"></div>
+
+            <!-- Exibição das amostras -->
+            <div id="amostras-section" style="display: none;">
+
+                <h2 id="amostras-header">Foram encontradas <span id="amostras-count">0</span> amostra(s)</h2>
+                <div id="amostras-container"></div>
+
+            </div>
+
+        </form>
+
+    </div>
 
     <!-- Janela Modal -->
     <div id="modal" class="modal oculto">
+
         <div class="modal-conteudo">
+
             <!-- Modal genérico para erros -->
             <h2 id="modal-titulo"></h2>
             <p id="modal-mensagem" class="oculto"></p>
 
             <!-- Modal específico para resultados -->
             <div id="modal-resultado" class="oculto">
+
                 <fieldset>
+
                     <legend>Cálcário</legend>
                     <p id="tipoCalcario"></p>
                     <p id="calcarioHec"></p>
                     <p id="calcarioTotal"></p>
+
                 </fieldset>
+
                 <fieldset>
+
                     <legend>Potássio (K)</legend>
                     <p id="potassioHec"></p>
                     <p id="potassioTotal"></p>
+
                 </fieldset>
+
                 <fieldset>
+
                     <legend>Fósforo (P)</legend>
                     <p id="fosforoHec"></p>
                     <p id="fosforoTotal"></p>
+
                 </fieldset>
+
             </div>
 
             <button id="fecharModal">Fechar</button>
+
         </div>
+
     </div>
 
     <script src="js/script.js"></script>
