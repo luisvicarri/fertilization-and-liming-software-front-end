@@ -35,7 +35,9 @@ label {
     margin-bottom: 10px;
 }
 
-input[type="text"], input[type="number"], select {
+input[type="text"],
+input[type="number"],
+select {
     padding: 10px;
     font-size: 1rem;
     border: 2px solid #ccc;
@@ -43,6 +45,7 @@ input[type="text"], input[type="number"], select {
     text-align: left;
     width: 500px;
     font-family: 'Poppins';
+    margin-right: 10px;
 }
 
 form p {
@@ -64,9 +67,9 @@ form p {
     margin-bottom: 20px;
 }
 
-input[type="button"], input[type="reset"], button {
-    background-color: #97af6a;
-    color: white;
+input[type="button"],
+input[type="reset"],
+button {
     padding: 12px 30px;
     border: none;
     border-radius: 4px;
@@ -77,13 +80,39 @@ input[type="button"], input[type="reset"], button {
     margin-right: 10px;
 }
 
-input[type="button"]:hover, input[type="reset"]:hover, .modal-conteudo button:hover, button:hover{
-    background-color: #7f9458;
+input[type="button"] {
+    background-color: #28a745;
+    color: white;
 }
 
-input[type="button"]:active, input[type="reset"]:active {
+button {
+    background-color: #28a745;
+    color: white;
+}
+
+input[type="button"]:hover,
+input[type="reset"]:hover,
+.modal-conteudo button:hover,
+button:hover {
+    background-color: #218838;
+}
+
+/* input[type="button"]:active,
+input[type="reset"]:active 
+{
     background-color: #0b0f03;
     transform: scale(0.98);
+} */
+
+input[type="reset"] {
+    background-color: transparent;
+    color: #e08d1f;
+    border: 1px solid #e08d1f;
+}
+
+input[type="reset"]:hover {
+    background-color: #e08d1f;
+    color: white;
 }
 
 /* Fundo escuro para o modal */
@@ -132,7 +161,7 @@ input[type="button"]:active, input[type="reset"]:active {
     margin-top: 15px;
     padding: 10px 20px;
     border: none;
-    background-color: #97af6a;
+    background-color: #28a745;
     color: #fff;
     font-size: 1rem;
     border-radius: 5px;
@@ -161,10 +190,52 @@ input[type="button"]:active, input[type="reset"]:active {
     background-color: transparent;
     color: #007BFF;
     border: 1px solid #007BFF;
-    margin-left: 10px;
 }
 
 #process-btn:hover {
     background-color: #007BFF;
     color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.amostra {
+    margin: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.calcular-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.remover-btn {
+    background-color: transparent;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.calcular-btn:hover {
+    background-color: #218838;
+}
+
+.remover-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+h3 {
+    margin: 4px;
 }

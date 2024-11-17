@@ -206,14 +206,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 console.log("Resultado:", result);
 
-                responseMessage.innerText = `Sucesso: ${result.status}`;
+                let dados = result.data;
+                console.log(dados);
 
-                // Agora, acesse o campo 'status'
-                if (result.status) {
-                    responseMessage.innerText = `Sucesso: ${result.status}`;
-                } else {
-                    responseMessage.innerText = "Falha: status não encontrado na resposta.";
-                }
+                showPDFResult(dados);
 
             } else {
                 responseMessage.innerText = "Erro ao processar o arquivo.";
@@ -224,6 +220,67 @@ document.addEventListener("DOMContentLoaded", () => {
             responseMessage.innerText = "Erro de conexão com o servidor.";
         }
 
+
+
     });
 
 });
+
+function showPDFResult(result) {
+    const amostrasSection = document.getElementById("amostras-section");
+    const amostrasContainer = document.getElementById("amostras-container");
+    const amostrasCount = document.getElementById("amostras-count");
+
+    // Exibe a seção de amostras
+    amostrasSection.style.display = "block";
+
+    // Atualiza o contador de amostras
+    amostrasCount.textContent = result.length;
+
+    // Limpa o contêiner
+    amostrasContainer.innerHTML = "";
+
+    // Renderiza as amostras
+    result.forEach((amostra) => {
+        const amostraDiv = document.createElement("div");
+        amostraDiv.classList.add("amostra");
+
+        amostraDiv.innerHTML = `
+                <h3>Amostra ${amostra.id}</h3>
+                
+                <input type="radio" name="tipo-${amostra.id}" id="consorciacao" value=0 checked>
+                <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
+
+                <input type="radio" name="tipo-${amostra.id}" id="macieira" value=1>
+                <label for="macieira">Macieira</label><br>
+
+                <input type="number" placeholder="Área plantada em Hectares" />
+                <button class="calcular calcular-btn">Calcular</button>
+                <button class="remover remover-btn">Excluir</button>  
+            `;
+
+        // Funções dos botões
+        const calcularButton = amostraDiv.querySelector(".calcular");
+        const removerButton = amostraDiv.querySelector(".remover");
+
+        calcularButton.addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            dados = receiveJSON();
+
+            if (dados.status === "failed") {
+                exibirModalErro("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
+            } else {
+                exibirModalResultado(dados);
+            }
+        });
+
+        removerButton.addEventListener("click", () => {
+            amostrasContainer.removeChild(amostraDiv);
+            amostrasCount.textContent = --amostrasCount.textContent;
+        });
+
+        amostrasContainer.appendChild(amostraDiv);
+    });
+}
