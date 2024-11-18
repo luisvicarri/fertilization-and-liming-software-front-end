@@ -1,4 +1,4 @@
-# 🌱 **Projeto de Recomendação de Adubação e Calagem** 🌱
+# 🌱 **Projeto de Recomendação de Adubação e Calagem**
 
 Este projeto consiste na implementação de um front-end para **recomendação de adubação e calagem** em solos, com foco em dois tipos específicos de cultivo:
 
