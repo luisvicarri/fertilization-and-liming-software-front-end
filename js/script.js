@@ -84,13 +84,20 @@ function displayResultModal(response) {
     const modal = document.getElementById("modal");
     document.getElementById("modal-title").innerText = "Resultado da Análise";
 
+    console.log(response)
     // Obtém e formata os valores retornados
-    const limestoneDosePHa = response.dose_calcario_hec ? response.dose_calcario_hec.toFixed(2) : 'N/A';
-    const totalLimestoneDose = response.dose_calcario_total ? response.dose_calcario_total.toFixed(2) : 'N/A';
-    const potassiumPHa = response.valor_potassio_hectare ? response.valor_potassio_hectare.toFixed(2) : 'N/A';
-    const totalpotassium = response.valor_potassio_total ? response.valor_potassio_total.toFixed(2) : 'N/A';
-    const phosphorusPHa = response.valor_fosforo_hectare ? response.valor_fosforo_hectare.toFixed(2) : 'N/A';
-    const totalPhosphorus = response.valor_fosforo_total ? response.valor_fosforo_total.toFixed(2) : 'N/A';
+    const limestoneDosePHa = response.dose_calcario_hec !== null && response.dose_calcario_hec !== undefined 
+        ? response.dose_calcario_hec.toFixed(2) : 'N/A';
+    const totalLimestoneDose = response.dose_calcario_total !== null && response.dose_calcario_total !== undefined 
+        ? response.dose_calcario_total.toFixed(2) : 'N/A';
+    const potassiumPHa = response.valor_potassio_hectare !== null && response.valor_potassio_hectare !== undefined 
+        ? response.valor_potassio_hectare.toFixed(2) : 'N/A';
+    const totalpotassium = response.valor_potassio_total !== null && response.valor_potassio_total !== undefined 
+        ? response.valor_potassio_total.toFixed(2) : 'N/A';
+    const phosphorusPHa = response.valor_fosforo_hectare !== null && response.valor_fosforo_hectare !== undefined 
+        ? response.valor_fosforo_hectare.toFixed(2) : 'N/A';
+    const totalPhosphorus = response.valor_fosforo_total !== null && response.valor_fosforo_total !== undefined 
+        ? response.valor_fosforo_total.toFixed(2) : 'N/A';
 
     // Popula os campos do modal com os resultados
     document.getElementById("limestone-type").innerText = `Tipo de Calcário: Dolomítico`;
@@ -203,7 +210,11 @@ function displayPDFSamples(result) {
                     // Envia os dados para o back-end e exibe o resultado em um modal
                     let calculation = await sendJSON(apiUrl, json);
 
-                    displayResultModal(calculation);
+                    if (calculation.status === "failed") {
+                        displayErrorModal("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
+                    } else {
+                        displayResultModal(calculation);
+                    }
 
                 } else if (!isAnyRadioChecked) {
                     alert("Por favor, selecione o tipo de espécie");
@@ -268,6 +279,7 @@ document.getElementById('button').addEventListener('click', async function (even
 
         // Envia os dados para o back-end e processa o resultado
         let calculation = await sendJSON(apiUrl, json);
+        console.log(calculation)
 
         if (calculation.status === "failed") {
             displayErrorModal("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
