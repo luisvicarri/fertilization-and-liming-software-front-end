@@ -1,203 +1,209 @@
-const jsonTeste = {
-    status: "success",
-    dose_calcario_hec: 2.5,
-    dose_calcario_total: 25,
-    valor_potassio_hectare: 100,
-    valor_potassio_total: 1000,
-    valor_fosforo_hectare: 50,
-    valor_fosforo_total: 500
-};
-
 /*
     FUNCTIONS
 */
 
-function sendJSON(tipoEspecie, area, smp, ctcPH7, argila, k, p) {
+// Função para enviar um JSON ao back-end
+async function sendJSON(apiUrl, json) {
 
-    let json = {
-        "tipoEspecie": tipoEspecie,
-        "area": area,
-        "smp": smp,
-        "ctcPH7": ctcPH7,
-        "argila": argila,
-        "p": p,
-        "k": k
-    };
-
-    let jsonString = JSON.stringify(json, null, 2);
-
-    alert("Os seguintes dados serão enviados:\n\n" + jsonString);
-
-    console.log(jsonString);
+    alert("Os seguintes dados serão enviados:\n\n" + JSON.stringify(json, null, 2));
 
     try {
-
-        // Enviando o JSON para o back-end via fetch
-        fetch('https://jsonplaceholder.typicode.com/posts', {
+        // Fazendo uma requisição POST com os dados no formato JSON
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(json)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Dados enviados com sucesso:', data);
-            })
-            .catch(error => {
-                console.error('Erro ao enviar os dados:', error);
-            });
+            body: JSON.stringify(json),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ao enviar dados: ${response.statusText}`);
+        }
+
+        // Converte a resposta para JSON e a retorna
+        const data = await response.json();
+
+        return data;
 
     } catch (error) {
-        console.error("Erro ao enviar o JSON:", error.message);
+        console.error('Erro ao enviar ou receber os dados:', error.message);
+        return null;
     }
 
+}
+
+// Função para enviar um arquivo ao back-end
+async function sendFile(apiUrl, file) {
+
+    const formData = new FormData();
+    formData.append("file", file); // Adiciona o arquivo ao FormData
+
+    try {
+         // Fazendo a requisição POST com o arquivo
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            body: formData,
+        });
+
+        if (response.ok) {
+
+            let result = await response.json();
+            result = JSON.parse(result);
+
+            displayPDFSamples(result); // Exibe os dados processados
+
+            return result;
+
+        } else {
+            throw new Error(`Erro ao enviar dados: ${response.statusText}`);
+        }
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 
 }
 
-function receiveJSON() {
-
-    // // Simula a URL do backend
-    // const apiUrl = "https://api.example.com/analise";
-
-    // try {
-    //     // Faz a requisição ao backend
-    //     const response = await fetch(apiUrl);
-
-    //     if (!response.ok) {
-    //         throw new Error(`Erro ao buscar dados: ${response.statusText}`);
-    //     }
-
-    //     // Converte o JSON recebido
-    //     const dados = await response.json();
-
-    // } catch (error) {
-    //     console.error("Erro ao carregar os dados:", error.message);
-    // }
-
-    let dados = jsonTeste;
-
-    return dados;
-}
-
-function exibirModalErro(titulo, mensagem) {
+// Exibe uma mensagem de erro no modal
+function displayErrorModal(title, message) {
     const modal = document.getElementById("modal");
-    document.getElementById("modal-titulo").innerText = titulo;
-    document.getElementById("modal-mensagem").innerText = mensagem;
+    document.getElementById("modal-title").innerText = title;
+    document.getElementById("modal-message").innerText = message;
 
-    // Esconde o conteúdo do resultado e exibe o erro
-    document.getElementById("modal-mensagem").classList.remove("oculto");
-    document.getElementById("modal-resultado").classList.add("oculto");
+    // Esconde o conteúdo do resultado e exibe a mensagem de erro
+    document.getElementById("modal-message").classList.remove("hidden");
+    document.getElementById("modal-result").classList.add("hidden");
 
     modal.style.display = "flex";
 }
 
-function exibirModalResultado(dados) {
+// Exibe os resultados da análise no modal
+function displayResultModal(response) {
     const modal = document.getElementById("modal");
-    document.getElementById("modal-titulo").innerText = "Resultado da Análise";
+    document.getElementById("modal-title").innerText = "Resultado da Análise";
 
-    // Popula os campos do modal
-    document.getElementById("tipoCalcario").innerText = `Tipo de Calcário: Dolomítico`;
-    document.getElementById("calcarioHec").innerText = `Dose por Hectare: ${dados.dose_calcario_hec} t/ha`;
-    document.getElementById("calcarioTotal").innerText = `Dose Total: ${dados.dose_calcario_total} t`;
-    document.getElementById("potassioHec").innerText = `Valor por Hectare: ${dados.valor_potassio_hectare} kg/ha`;
-    document.getElementById("potassioTotal").innerText = `Valor Total: ${dados.valor_potassio_total} kg`;
-    document.getElementById("fosforoHec").innerText = `Valor por Hectare: ${dados.valor_fosforo_hectare} kg/ha`;
-    document.getElementById("fosforoTotal").innerText = `Valor Total: ${dados.valor_fosforo_total} kg`;
+    // Obtém e formata os valores retornados
+    const limestoneDosePHa = response.dose_calcario_hec ? response.dose_calcario_hec.toFixed(2) : 'N/A';
+    const totalLimestoneDose = response.dose_calcario_total ? response.dose_calcario_total.toFixed(2) : 'N/A';
+    const potassiumPHa = response.valor_potassio_hectare ? response.valor_potassio_hectare.toFixed(2) : 'N/A';
+    const totalpotassium = response.valor_potassio_total ? response.valor_potassio_total.toFixed(2) : 'N/A';
+    const phosphorusPHa = response.valor_fosforo_hectare ? response.valor_fosforo_hectare.toFixed(2) : 'N/A';
+    const totalPhosphorus = response.valor_fosforo_total ? response.valor_fosforo_total.toFixed(2) : 'N/A';
 
-    // Esconde o conteúdo de erro e exibe o resultado
-    document.getElementById("modal-mensagem").classList.add("oculto");
-    document.getElementById("modal-resultado").classList.remove("oculto");
+    // Popula os campos do modal com os resultados
+    document.getElementById("limestone-type").innerText = `Tipo de Calcário: Dolomítico`;
+    document.getElementById("limestone-p-ha").innerText = `Dose por Hectare: ${limestoneDosePHa} t/ha`;
+    document.getElementById("total-limestone").innerText = `Dose Total: ${totalLimestoneDose} t`;
+    document.getElementById("potassium-p-ha").innerText = `Valor por Hectare: ${potassiumPHa} kg/ha`;
+    document.getElementById("total-potassium").innerText = `Valor Total: ${totalpotassium} kg`;
+    document.getElementById("phosphorus-p-ha").innerText = `Valor por Hectare: ${phosphorusPHa} kg/ha`;
+    document.getElementById("total-phosphorus").innerText = `Valor Total: ${totalPhosphorus} kg`;
+
+    // Esconde o erro e exibe os resultados
+    document.getElementById("modal-message").classList.add("hidden");
+    document.getElementById("modal-result").classList.remove("hidden");
 
     modal.style.display = "flex";
 }
 
-function showScreen() {
+// Função para alternar a exibição de telas
+function switchScreenDisplay() {
 
     const contents = document.querySelectorAll('.content');
-    contents.forEach(content => content.style.display = 'none');
+    contents.forEach(content => content.style.display = 'none'); // Oculta todas as telas
 
-    const selectedValue = document.getElementById('tipoEntrada').value;
+    const selectedValue = document.getElementById('input-type').value; // Obtém a tela através da opção selecionada
 
     const selectedScreen = document.getElementById(selectedValue);
     if (selectedScreen) {
-        selectedScreen.style.display = 'block';
+        selectedScreen.style.display = 'block'; // Exibe a tela correspondente
     }
 }
 
-function showPDFResult(result) {
+// Função para exibir as amostras processadas em PDF
+function displayPDFSamples(result) {
 
-    let dados = result.data;
-    console.log("Dados do JSON: ", dados);
+    let data = result.data; // Obtém o Array 'data' do Json retornado
 
-    const amostrasSection = document.getElementById("amostras-section");
-    const amostrasContainer = document.getElementById("amostras-container");
-    const amostrasCount = document.getElementById("amostras-count");
+    const sampleSection = document.getElementById("sample-section");
+    const sampleContainer = document.getElementById("sample-container");
+    const sampleCount = document.getElementById("sample-count");
 
-    // Exibe a seção de amostras
-    amostrasSection.style.display = "block";
+    // Exibe a seção e atualiza o contador de amostras
+    sampleSection.style.display = "block";
+    sampleCount.textContent = data.length;
+    sampleContainer.innerHTML = ""; // Limpa o contêiner
 
-    // Atualiza o contador de amostras
-    amostrasCount.textContent = dados.length;
+    // Adiciona cada amostra à interface
+    data.forEach((sample) => {
+        const sampleDiv = document.createElement("div"); // Cria um contêiner para cada amostra
+        sampleDiv.classList.add("sample");
 
-    // Limpa o contêiner
-    amostrasContainer.innerHTML = "";
-
-    // Renderiza as amostras
-    dados.forEach((amostra) => {
-        const amostraDiv = document.createElement("div");
-        amostraDiv.classList.add("amostra");
-
-        amostraDiv.innerHTML = `
-                <h3>Ref. ${dados[amostra.id - 1].ref}</h3>
+        // Define o conteúdo HTML para cada amostra
+        sampleDiv.innerHTML = `
+                <h3>Ref. ${data[sample.id - 1].ref}</h3>
                 
-                <input type="radio" name="tipo-${amostra.id}" id="consorciacao" value=0>
-                <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
+                <input type="radio" name="type-${sample.id}" id="intercropping" value=0>
+                <label for="intercropping">Consorciação de Gramíneas e Leguminosas</label><br>
 
-                <input type="radio" name="tipo-${amostra.id}" id="macieira" value=1>
-                <label for="macieira">Macieira</label><br>
+                <input type="radio" name="type-${sample.id}" id="apple-tree" value=1>
+                <label for="apple-tree">Macieira</label><br>
 
-                <input type="number" placeholder="Área plantada em Hectares" data-id="${amostra.id}"/>
-                <button class="calcular calcular-btn" data-id="${amostra.id}">Calcular</button>
-                <button class="remover remover-btn">Excluir</button>  
+                <input type="number" placeholder="Área plantada em Hectares" data-id="${sample.id}"/>
+                <button class="calculate calculate-btn" data-id="${sample.id}">Calcular</button>
+                <button class="remove remove-btn">Excluir</button>  
             `;
 
-        // Funções dos botões
-        const calcularButton = amostraDiv.querySelector(".calcular");
-        const removerButton = amostraDiv.querySelector(".remover");
+        // Obtém referências aos botões de calcular e excluir
+        const calculateBtn = sampleDiv.querySelector(".calculate");
+        const removeBtn = sampleDiv.querySelector(".remove");
 
-        calcularButton.addEventListener("click", function (event) {
+        // Configura o evento para obter os valores e enviá-los ao back-end
+        calculateBtn.addEventListener("click", async function (event) {
 
             event.preventDefault();
 
             if (result.status === "success") {
-                const amostraId = this.getAttribute("data-id");
-                console.log("Amostra ativada: ", amostraId)
+                const sampleId = this.getAttribute("data-id");
 
-                const areaInput = document.querySelector(`input[data-id="${amostraId}"]`);
+                const area = document.querySelector(`input[data-id="${sampleId}"]`);
 
-                const radios = document.querySelectorAll(`input[name="tipo-${amostra.id}"]`);
+                const radios = document.querySelectorAll(`input[name="type-${sample.id}"]`);
                 const isAnyRadioChecked = Array.from(radios).some(radio => radio.checked);
-                const selectedRadio = document.querySelector(`input[name="tipo-${amostraId}"]:checked`);
+                const selectedRadio = Number(document.querySelector(`input[name="type-${sampleId}"]:checked`));
 
-                index = amostraId - 1
-                console.log("Dados da posição ", index, " : ", dados[index])
+                index = sampleId - 1 // Determina o índice correspondente à amostra
 
-                const isAreaValid = areaInput.value.trim() !== "";
-                const isSMPValid = !isNaN(dados[index].SMP);
-                const isCTCValid = !isNaN(dados[index].CTC_ph7);
-                const isArgilaValid = !isNaN(dados[index].argila);
-                const isFosforoValid = !isNaN(dados[index].P);
-                const isPotassioValid = !isNaN(dados[index].K);
+                // Valida os dados necessários para o cálculo
+                const isAreaValid = area.value.trim() !== "";
+                const isSMPValid = !isNaN(data[index].SMP);
+                const isCTCValid = !isNaN(data[index].CTC_ph7);
+                const isClayValid = !isNaN(data[index].argila);
+                const isPhosphorusValid = !isNaN(data[index].P);
+                const isPotassiumValid = !isNaN(data[index].K);
 
                 if (isAreaValid && isAnyRadioChecked && isSMPValid && isCTCValid &&
-                    isArgilaValid && isFosforoValid && isPotassioValid) {
+                    isClayValid && isPhosphorusValid && isPotassiumValid) {
 
-                    sendJSON(selectedRadio.value, areaInput.value, dados[index].SMP,
-                        dados[index].CTC_ph7, dados[index].argila, dados[index].K, dados[index].P);
+                    const apiUrl = "http://localhost:8080/agri-server/recommendation/calculate";
 
-                    calculation = receiveJSON();
-                    exibirModalResultado(calculation);
+                    // Monta o objeto JSON com os dados da amostra
+                    let json = {
+                        tipoEspecie: selectedRadio.value,
+                        area: area.value,
+                        smp: data[index].SMP,
+                        ctcPH7: data[index].CTC_ph7,
+                        argila: data[index].argila,
+                        p: data[index].P,
+                        k: data[index].K
+                    };
+
+                    // Envia os dados para o back-end e exibe o resultado em um modal
+                    let calculation = await sendJSON(apiUrl, json);
+
+                    displayResultModal(calculation);
 
                 } else if (!isAnyRadioChecked) {
                     alert("Por favor, selecione o tipo de espécie");
@@ -210,17 +216,18 @@ function showPDFResult(result) {
                 }
 
             } else {
-                exibirModalErro("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
+                displayErrorModal("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
             }
 
         });
 
-        removerButton.addEventListener("click", () => {
-            amostrasContainer.removeChild(amostraDiv);
-            amostrasCount.textContent = --amostrasCount.textContent;
+        // Configura o evento para excluir a amostra da interface
+        removeBtn.addEventListener("click", () => {
+            sampleContainer.removeChild(sampleDiv); // Remove a amostra do contêiner
+            sampleCount.textContent = --sampleCount.textContent;  // Atualiza o contador de amostras
         });
 
-        amostrasContainer.appendChild(amostraDiv);
+        sampleContainer.appendChild(sampleDiv); // Adiciona o contêiner da amostra à interface
     });
 }
 
@@ -228,29 +235,44 @@ function showPDFResult(result) {
     EVENTS
 */
 
-document.getElementById('button').addEventListener('click', function (event) {
+// Configura o evento para o botão de enviar dados na opção de inserção manual de dados
+document.getElementById('button').addEventListener('click', async function (event) {
 
     event.preventDefault();
 
-    let tipoEspecie = document.querySelector('input[name="option"]:checked')?.value;
+    // Coleta os valores de entrada preenchidos pelo usuário
+    let cultivationType = Number(document.querySelector('input[name="option"]:checked')?.value);
     let area = parseFloat(document.getElementById('area').value);
     let smp = parseFloat(document.getElementById('smp').value);
     let ctcPH7 = parseFloat(document.getElementById('ctcPH7').value);
-    let argila = parseFloat(document.getElementById('argila').value);
-    let k = parseFloat(document.getElementById('potassio').value);
-    let p = parseFloat(document.getElementById('fosforo').value);
+    let clay = parseFloat(document.getElementById('clay').value);
+    let potassium = parseFloat(document.getElementById('potassium').value);
+    let phosphorus = parseFloat(document.getElementById('phosphorus').value);
 
+    // Verifica se todos os valores foram preenchidos corretamente
     if (!isNaN(area) && !isNaN(smp) && !isNaN(ctcPH7) &&
-        !isNaN(argila) && !isNaN(p) && !isNaN(k)) {
+        !isNaN(clay) && !isNaN(phosphorus) && !isNaN(potassium)) {
 
-        sendJSON(tipoEspecie, area, smp, ctcPH7, argila, k, p);
+        const apiUrl = "http://localhost:8080/agri-server/recommendation/calculate";
 
-        dados = receiveJSON();
+        // Monta o JSON com os valores de entrada
+        let json = {
+            tipoEspecie: cultivationType,
+            area: area,
+            smp: smp,
+            ctcPH7: ctcPH7,
+            argila: clay,
+            p: phosphorus,
+            k: potassium
+        };
 
-        if (dados.status === "failed") {
-            exibirModalErro("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
+        // Envia os dados para o back-end e processa o resultado
+        let calculation = await sendJSON(apiUrl, json);
+
+        if (calculation.status === "failed") {
+            displayErrorModal("Erro no Cálculo", "Não foi possível realizar o cálculo. Ocorreu um erro.");
         } else {
-            exibirModalResultado(dados);
+            displayResultModal(calculation);
         }
 
     } else {
@@ -259,10 +281,12 @@ document.getElementById('button').addEventListener('click', function (event) {
 
 });
 
-document.getElementById("fecharModal").addEventListener("click", function () {
+// Configura o evento para fechar o modal
+document.getElementById("close-modal").addEventListener("click", function () {
     document.getElementById("modal").style.display = "none";
 });
 
+// Evento disparado quando a página é carregada para configurar o seletor de arquivos
 document.addEventListener("DOMContentLoaded", () => {
     const fileField = document.getElementById("file-field");
     const fileInput = document.getElementById("file-input");
@@ -271,59 +295,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fileField.style.display = "flex";
 
-    // Abrir o seletor de arquivo ao clicar no botão "Escolher arquivo"
+    // Configura o evento para abrir o seletor de arquivos
     browseButton.addEventListener("click", () => {
         fileInput.click();
     });
 
-    // Atualizar o caminho do arquivo no campo de texto
+    // Atualiza o nome do arquivo selecionado no campo de texto
     fileInput.addEventListener("change", () => {
         if (fileInput.files[0]) {
             filePathInput.value = fileInput.files[0].name;
-            console.log('Caminho do arquivo PDF selecionado: ', filePathInput.value);
         }
     });
 
     const processButton = document.getElementById("process-btn");
-    const responseMessage = document.getElementById("responseMessage");
 
+    // Configura o evento para processar o arquivo carregado
     processButton.addEventListener("click", async () => {
-        const file = fileInput.files[0]; // Obtém o arquivo selecionado
+        const file = fileInput.files[0];
 
         if (!file) {
             alert("Selecione um arquivo antes de processar!");
             return;
         }
 
-        const formData = new FormData();
-        formData.append("file", file); // Adiciona o arquivo ao formData
+        const apiUrl = "http://127.0.0.1:5000/upload_pdf";
+        let PdfData = await sendFile(apiUrl, file); // Envia o arquivo para o micro serviço de leitura de PDF e recebe os dados processados
 
-        try {
-            // Envia o arquivo ao backend
-            const response = await fetch("http://127.0.0.1:5000/upload_pdf", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (response.ok) {
-
-                let result = await response.json();
-                result = JSON.parse(result);
-
-                console.log("Resultado recebido:", result);
-
-                showPDFResult(result);
-
-            } else {
-                responseMessage.innerText = "Erro ao processar o arquivo.";
-            }
-
-        } catch (error) {
-            console.error(error);
-            responseMessage.innerText = "Erro de conexão com o servidor.";
-        }
-
-
+        displayPDFSamples(PdfData); // Exibe os dados processados na interface
 
     });
 

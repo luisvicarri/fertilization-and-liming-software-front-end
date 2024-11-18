@@ -2,47 +2,58 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
     <title>Análise de Solo</title>
+
+    <!-- Inclusão do arquivo de estilos (CSS) externo -->
     <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body>
     <h1>Recomendação de Adubação e Calagem</h1>
     <p>Seja bem-vindo ao sistema de análise do solo, para começar, forneça os dados solicitados abaixo:</p>
 
+    <!-- Grupo de seleção para escolher entre tipos de inserção de dados -->
     <div class="select-group">
 
-        <!-- <label for="tipoEntrada">Escolha uma Forma de Inserção de Dados:</label> -->
+        <!-- Menu dropdown para escolher entre inserir dados manualmente ou importar via PDF -->
+        <select id="input-type" onchange="switchScreenDisplay()">
 
-        <select id="tipoEntrada" onchange="showScreen()">
             <option>Escolha uma forma de inserção de dados</option>
             <option value="manual">Inserir dados manualmente</option>
             <option value="pdf">Importar dados</option>
+
         </select>
 
     </div>
 
+    <!-- Formulário para inserção manual de dados -->
     <div id="manual" class="content">
 
+        <!-- Início do formulário de dados -->
         <form>
 
             <fieldset>
 
                 <legend>Escolha o Tipo de Plantação</legend>
 
-                <input type="radio" name="option" id="macieira" value="1" checked>
-                <label for="macieira">Macieira</label><br>
+                <!-- Opções de tipos de plantação com radio buttons -->
+                <input type="radio" name="option" id="apple-tree" value=1 checked>
+                <label for="apple-tree">Macieira</label><br>
 
-                <input type="radio" name="option" id="consorciacao" value="0">
-                <label for="consorciacao">Consorciação de Gramíneas e Leguminosas</label><br>
+                <input type="radio" name="option" id="intercropping" value=0>
+                <label for="intercropping">Consorciação de Gramíneas e Leguminosas</label><br>
 
             </fieldset>
 
             <fieldset>
 
+                <!-- Inserção dos dados solicitados -->
                 <legend>Insira os Dados Solicitados</legend>
 
+                <!-- Campos para o usuário inserir os dados -->
                 <p>
                     <label for="area">Área do Solo (ha)</label>
                     <input type="number" step="0.01" id="area" />
@@ -53,18 +64,19 @@
                     <label for="ctcPH7">CTC (pH 7,0)</label>
                     <input type="number" step="0.01" id="ctcPH7" />
 
-                    <label for="argila">Argila (%)</label>
-                    <input type="number" step="0.01" id="argila" />
+                    <label for="clay">Argila (%)</label>
+                    <input type="number" step="0.01" id="clay" />
 
-                    <label for="potassio">Potássio (K)</label>
-                    <input type="number" step="0.01" id="potassio" />
+                    <label for="potassium">Potássio (K)</label>
+                    <input type="number" step="0.01" id="potassium" />
 
-                    <label for="fosforo">Fósforo (P)</label>
-                    <input type="number" id="fosforo" />
+                    <label for="phosphorus">Fósforo (P)</label>
+                    <input type="number" id="phosphorus" />
                 </p>
 
             </fieldset>
 
+            <!-- Contêiner para os botões de Enviar e Resetar -->
             <div class="buttons-container">
                 <input type="button" id="button" value="Enviar">
                 <input type="reset" id="reset" value="Resetar">
@@ -74,30 +86,35 @@
 
     </div>
 
+    <!-- Formulário para importação de dados via PDF -->
     <div id="pdf" class="content">
 
         <form>
 
             <label for="file-path">Importe o PDF que deseja analisar</label>
 
+            <!-- Contêiner para os botões de importação e processamento de PDF -->
             <div id="file-field" style="display: none;" class="input-container">
 
+                <!-- Botão para abrir o seletor de arquivos -->
                 <button type="button" id="browse-btn">Importar arquivo</button>
 
+                <!-- Campo de texto para exibir o caminho do arquivo selecionado -->
                 <input type="text" id="file-path" placeholder="Nenhum arquivo escolhido" readonly>
+
+                <!-- Seletor de arquivos oculto -->
                 <input type="file" id="file-input" accept=".pdf" hidden>
 
+                <!-- Botão para processar o arquivo importado -->
                 <button type="button" id="process-btn">Processar</button>
 
             </div>
 
-            <div id="responseMessage"></div>
+            <!-- Seção para exibir amostras extraídas do PDF -->
+            <div id="sample-section" style="display: none;">
 
-            <!-- Exibição das amostras -->
-            <div id="amostras-section" style="display: none;">
-
-                <h2 id="amostras-header">Foram encontradas <span id="amostras-count">0</span> amostra(s)</h2>
-                <div id="amostras-container"></div>
+                <h2 id="sample-header">Foram encontradas <span id="sample-count">0</span> amostra(s)</h2>
+                <div id="sample-container"></div>
 
             </div>
 
@@ -105,51 +122,56 @@
 
     </div>
 
-    <!-- Janela Modal -->
-    <div id="modal" class="modal oculto">
+<!-- Janela Modal para exibir resultados ou erros -->
+    <div id="modal" class="modal hidden">
 
-        <div class="modal-conteudo">
+        <div class="modal-content">
 
-            <!-- Modal genérico para erros -->
-            <h2 id="modal-titulo"></h2>
-            <p id="modal-mensagem" class="oculto"></p>
+            <!-- Modal para exibir erros genéricos -->
+            <h2 id="modal-title"></h2>
+            <p id="modal-message" class="hidden"></p>
 
-            <!-- Modal específico para resultados -->
-            <div id="modal-resultado" class="oculto">
+            <!-- Modal para exibir os resultados dos cálculos -->
+            <div id="modal-result" class="hidden">
 
+                <!-- Seção de resultados para Cálcário -->
                 <fieldset>
 
                     <legend>Cálcário</legend>
-                    <p id="tipoCalcario"></p>
-                    <p id="calcarioHec"></p>
-                    <p id="calcarioTotal"></p>
+                    <p id="limestone-type"></p>
+                    <p id="limestone-p-ha"></p>
+                    <p id="total-limestone"></p>
 
                 </fieldset>
 
+                <!-- Seção de resultados para Potássio (K) -->
                 <fieldset>
 
                     <legend>Potássio (K)</legend>
-                    <p id="potassioHec"></p>
-                    <p id="potassioTotal"></p>
+                    <p id="potassium-p-ha"></p>
+                    <p id="total-potassium"></p>
 
                 </fieldset>
 
+                <!-- Seção de resultados para Fósforo (P) -->
                 <fieldset>
 
                     <legend>Fósforo (P)</legend>
-                    <p id="fosforoHec"></p>
-                    <p id="fosforoTotal"></p>
+                    <p id="phosphorus-p-ha"></p>
+                    <p id="total-phosphorus"></p>
 
                 </fieldset>
 
             </div>
 
-            <button id="fecharModal">Fechar</button>
+            <!-- Botão para fechar o modal -->
+            <button id="close-modal">Fechar</button>
 
         </div>
 
     </div>
 
+    <!-- Inclusão do arquivo JavaScript externo -->
     <script src="js/script.js"></script>
 
 </body>
